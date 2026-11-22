@@ -473,12 +473,14 @@ export default function Musica() {
 
                   <h2
                     className="
-                      font-caligrafia
-                      font-normal
-                      leading-tight
-                      text-[#1D344C]
-                      text-[clamp(42px,11vw,52px)]
-                      sm:text-[60px]
+                       font-caligrafia
+    font-normal
+    leading-tight
+    whitespace-nowrap
+    text-[#1D344C]
+    text-[36px]
+    sm:text-[45px]
+    md:text-[50px]
                     "
                   >
                     {CONFIG.nombres}

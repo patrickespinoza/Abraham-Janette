@@ -79,50 +79,53 @@ export default function Portada() {
           `,
         }}
       >
-        {/* ======================================
-            NOMBRES CALIGRÁFICOS
-        ====================================== */}
+        
+{/* ======================================
+    NOMBRES CALIGRÁFICOS EN UNA SOLA LÍNEA
+====================================== */}
 
-        <h1
-          className="
-            flex flex-col
-            items-center
-            justify-center
-            font-caligrafia
-            font-normal
-            leading-[0.85]
-            text-[clamp(72px,17vw,110px)]
-            sm:text-[125px]
-            md:text-[145px]
-            lg:text-[170px]
-          "
-        >
-          {/* NOMBRE DEL NOVIO */}
+<h1
+  className="
+    flex flex-row
+    items-baseline
+    justify-center
+    whitespace-nowrap
+    gap-2
+    sm:gap-3
+    lg:gap-5
+    font-caligrafia
+    font-normal
+    leading-none
+    text-[#FAF7F1]
+    text-[clamp(50px,8vw,75px)]
+    sm:text-[80px]
+    md:text-[95px]
+    lg:text-[115px]
+  "
+>
+  {/* NOMBRE DEL NOVIO */}
 
-          <span className="block">
-            {CONFIG.novio}
-          </span>
+  <span>
+    {CONFIG.novio}
+  </span>
 
-          {/* AMPERSAND */}
+  {/* AMPERSAND */}
 
-          <span
-            className="
-              my-1
-              text-[0.45em]
-              leading-none
-              text-[#F1E6D3]
-              sm:my-2
-            "
-          >
-            &amp;
-          </span>
+  <span
+    className="
+      text-[0.65em]
+      text-[#F1E6D3]
+    "
+  >
+    &amp;
+  </span>
 
-          {/* NOMBRE DE LA NOVIA */}
+  {/* NOMBRE DE LA NOVIA */}
 
-          <span className="block">
-            {CONFIG.novia}
-          </span>
-        </h1>
+  <span>
+    {CONFIG.novia}
+  </span>
+</h1>
 
         {/* ======================================
             SEPARADOR ORNAMENTAL CLÁSICO
