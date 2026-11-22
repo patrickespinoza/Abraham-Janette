@@ -191,7 +191,7 @@ const Frase = () => {
             italic
             text-[27px]
             leading-[1.65]
-            text-[#1D344C]
+            text-[#0e1f2f]
             sm:text-[36px]
             sm:leading-relaxed
             lg:text-[42px]
@@ -208,12 +208,12 @@ const Frase = () => {
           className="
             mt-7
             font-playfair
-            text-[10px]
+            text-[15px]
             uppercase
             tracking-[0.25em]
             text-[#92754D]
             sm:mt-8
-            sm:text-[12px]
+            sm:text-[17px]
             sm:tracking-[0.35em]
           "
         >

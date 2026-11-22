@@ -1,11 +1,27 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ==========================================
+   ANIMACIÓN ORIGINAL
+========================================== */
+
 @keyframes shine {
   0% {
     transform: translateX(-100%);
   }
+
   100% {
     transform: translateX(100%);
   }
+}
+
+/* ==========================================
+   TIPOGRAFÍA CALIGRÁFICA - WEDLY
+========================================== */
+
+.font-caligrafia {
+  font-family: "Pinyon Script", cursive !important;
+  font-weight: 400;
+  font-style: normal;
 }

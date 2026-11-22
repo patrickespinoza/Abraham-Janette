@@ -394,43 +394,47 @@ const Musica = () => {
 
                   {/* MONOGRAMA */}
 
-                  <motion.div
-                    className="
-                      mx-auto mb-4
-                      flex h-[76px] w-[76px]
-                      items-center justify-center
-                      rounded-full
-                      border border-[#C6A57B]
-                    "
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{
-                      duration: 0.7,
-                      delay: 0.2,
-                    }}
-                  >
-                    <div
-                      className="
-                        flex items-center gap-2
-                        font-playfair
-                        text-[29px]
-                        italic
-                        text-[#1D344C]
-                      "
-                    >
-                      <span>{CONFIG.inicialNovio}</span>
+   
 
-                      <span
-                        className="
-                          h-9 w-px
-                          bg-[#C6A57B]
-                        "
-                      />
+<motion.div
+  className="
+    mx-auto mb-4
+    flex h-[76px] w-[76px]
+    items-center justify-center
+    rounded-full
+    border border-[#C6A57B]
+  "
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{
+    duration: 0.7,
+    delay: 0.2,
+  }}
+>
+  <div
+    className="
+      flex items-center
+      justify-center
+      gap-1.5
+      font-caligrafia
+      font-normal
+      text-[39px]
+      leading-none
+      text-[#1D344C]
+    "
+  >
+    <span>{CONFIG.inicialNovio}</span>
 
-                      <span>{CONFIG.inicialNovia}</span>
-                    </div>
-                  </motion.div>
+    <span
+      className="
+        h-9 w-px
+        bg-[#C6A57B]
+      "
+    />
 
+    <span>{CONFIG.inicialNovia}</span>
+  </div>
+</motion.div>
                   {/* SUBTÍTULO */}
 
                   <p

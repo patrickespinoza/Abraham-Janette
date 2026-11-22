@@ -183,39 +183,48 @@ const Contador = ({
               MONOGRAMA CLÁSICO
           ================================== */}
 
-          <div
-            className="
-              relative mx-auto mb-7
-              flex h-[95px] w-[85px]
-              items-center justify-center
-              rounded-t-full
-              border border-[#C6A57B]
-              border-b-0
-              sm:h-[115px] sm:w-[105px]
-            "
-          >
-            <div
-              className="
-                flex items-center gap-3
-                font-playfair italic
-                text-[36px]
-                text-[#1D344C]
-                sm:text-[44px]
-              "
-            >
-              <span>{CONFIG.inicialNovio}</span>
+          {/* ======================================
+    INICIALES CALIGRÁFICAS A & J
+====================================== */}
 
-              <span
-                className="
-                  h-12 w-px
-                  bg-[#C6A57B]
-                "
-              />
+<div
+  className="
+    relative mx-auto mb-7
+    flex h-[95px] w-[85px]
+    items-center justify-center
+    rounded-t-full
+    border border-[#C6A57B]
+    border-b-0
+    sm:h-[115px] sm:w-[105px]
+  "
+>
+  <div
+    className="
+      flex items-center
+      justify-center
+      gap-2
+      font-caligrafia
+      font-normal
+      text-[48px]
+      leading-none
+      text-[#1D344C]
+      sm:gap-3
+      sm:text-[60px]
+    "
+  >
+    <span>{CONFIG.inicialNovio}</span>
 
-              <span>{CONFIG.inicialNovia}</span>
-            </div>
-          </div>
+    <span
+      className="
+        h-12 w-px
+        bg-[#C6A57B]
+        sm:h-14
+      "
+    />
 
+    <span>{CONFIG.inicialNovia}</span>
+  </div>
+</div>
           {/* FECHA */}
 
           <p

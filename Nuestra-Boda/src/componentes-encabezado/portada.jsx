@@ -22,8 +22,9 @@ export default function Portada() {
       className="
         relative
         w-full
-        h-screen
+        h-[100svh]
         overflow-hidden
+        bg-[#1D344C]
       "
     >
       {/* ======================================
@@ -79,41 +80,48 @@ export default function Portada() {
         }}
       >
         {/* ======================================
-            NOMBRES DE LOS NOVIOS
+            NOMBRES CALIGRÁFICOS
         ====================================== */}
 
         <h1
           className="
-            flex flex-row
-            items-baseline
+            flex flex-col
+            items-center
             justify-center
-            gap-2
-            whitespace-nowrap
-            font-playfair
+            font-caligrafia
             font-normal
-            italic
-            leading-tight
-            text-[clamp(26px,8.5vw,46px)]
-            sm:gap-3
-            sm:text-[58px]
-            md:text-[72px]
-            lg:gap-5
-            lg:text-[90px]
+            leading-[0.85]
+            text-[clamp(72px,17vw,110px)]
+            sm:text-[125px]
+            md:text-[145px]
+            lg:text-[170px]
           "
         >
-          <span>{CONFIG.novio}</span>
+          {/* NOMBRE DEL NOVIO */}
+
+          <span className="block">
+            {CONFIG.novio}
+          </span>
+
+          {/* AMPERSAND */}
 
           <span
             className="
-              text-[0.65em]
-              font-normal
-              italic
+              my-1
+              text-[0.45em]
+              leading-none
+              text-[#F1E6D3]
+              sm:my-2
             "
           >
             &amp;
           </span>
 
-          <span>{CONFIG.novia}</span>
+          {/* NOMBRE DE LA NOVIA */}
+
+          <span className="block">
+            {CONFIG.novia}
+          </span>
         </h1>
 
         {/* ======================================
@@ -122,7 +130,7 @@ export default function Portada() {
 
         <div
           className="
-            my-3
+            my-4
             flex items-center
             justify-center
             gap-3
@@ -199,6 +207,7 @@ export default function Portada() {
         >
           {CONFIG.fecha}
         </p>
+
       </motion.div>
     </section>
   );
