@@ -1,74 +1,119 @@
-
 import React from "react";
 import { motion } from "framer-motion";
 import {
+  Wine,
   HeartHandshake,
-  GlassWater,
-  Music2,
+  Heart,
   UtensilsCrossed,
-  Cake,
+  Music2,
   MoonStar,
 } from "lucide-react";
 
 // ==========================================
-// INFORMACIÓN EDITABLE - WEDLY PLUS
+// INFORMACIÓN EDITABLE - WEDLY
 // ==========================================
 
-// Modifica los horarios y nombres según el evento.
+const CONFIG = {
+
+
+  titulo: "Itinerario",
+
+  descripcion:
+    "Cada instante será parte de una historia inolvidable. Acompáñanos a celebrar cada momento.",
+
+  fraseFinal: "¡Te esperamos!",
+};
+
+// ==========================================
+// HORARIOS DEL EVENTO
+// ==========================================
+
 const eventos = [
   {
-    titulo: "Ceremonia civil",
-    hora: "4:30 PM",
+    titulo: "Recepción Social",
+    hora: "4:30 p. m.",
+    icono: Wine,
+  },
+  {
+    titulo: "Bendición",
+    hora: "5:00 p. m.",
     icono: HeartHandshake,
   },
   {
-    titulo: "Recepción",
-    hora: "6:00 PM",
-    icono: GlassWater,
+    titulo: "Entrada de los novios",
+    hora: "6:30 p. m.",
+    icono: Heart,
   },
   {
-    titulo: "Baile",
-    hora: "7:00 PM",
-    icono: Music2,
-  },
-  {
-    titulo: "Comida",
-    hora: "8:00 PM",
+    titulo: "Cena",
+    hora: "6:45 p. m.",
     icono: UtensilsCrossed,
   },
   {
-    titulo: "Pastel",
-    hora: "9:30 PM",
-    icono: Cake,
+    titulo: "Fiesta",
+    hora: "8:20 p. m.",
+    icono: Music2,
   },
   {
-    titulo: "Fin de la celebración",
-    hora: "12:00 AM",
+    titulo: "Nos vamos a casa",
+    hora: "11:00 p. m.",
     icono: MoonStar,
   },
 ];
 
 // ==========================================
-// ANIMACIONES
+// PALETA DE COLORES
+// ABRAHAM & JANETTE
 // ==========================================
 
-const animacionEntrada = {
-  oculto: {
-    opacity: 0,
-    y: 35,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.7,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
+const COLORES = {
+  champagne: "#F1E6D3",
+  azulMarino: "#1D344C",
+  verdeSalvia: "#A5A58E",
+  dorado: "#C6A57B",
+  doradoOscuro: "#92754D",
+  arena: "#DCCAB7",
+  blanco: "#FAF7F1",
 };
 
 // ==========================================
-// TARJETA DE EVENTO
+// DECORACIÓN BOTÁNICA
+// MISMAS HOJAS DEL CONTADOR
+// ==========================================
+
+const Rama = ({ className = "" }) => (
+  <svg
+    viewBox="0 0 120 150"
+    className={className}
+    fill="none"
+    aria-hidden="true"
+  >
+    <path
+      d="M12 145 Q32 80 105 12"
+      stroke={COLORES.verdeSalvia}
+      strokeWidth="1.5"
+    />
+
+    <g fill={COLORES.verdeSalvia}>
+      <path d="M24 116 Q-5 100 15 79 Q34 95 24 116Z" />
+
+      <path d="M31 101 Q60 108 69 83 Q42 80 31 101Z" />
+
+      <path d="M43 79 Q14 65 29 42 Q50 58 43 79Z" />
+
+      <path d="M53 65 Q83 77 93 50 Q67 44 53 65Z" />
+
+      <path d="M70 44 Q46 26 65 8 Q83 25 70 44Z" />
+
+      <path d="M83 32 Q111 39 119 15 Q97 10 83 32Z" />
+
+      <path d="M99 18 Q93 0 113 0 Q118 14 99 18Z" />
+    </g>
+  </svg>
+);
+
+// ==========================================
+// EVENTO INDIVIDUAL
 // ==========================================
 
 const EventoItinerario = ({
@@ -76,97 +121,130 @@ const EventoItinerario = ({
   hora,
   icono: Icono,
   ultimo,
+  index,
 }) => {
   return (
-    <motion.div
-      variants={animacionEntrada}
-      className="relative flex items-start gap-5 sm:gap-8"
+    <motion.li
+      initial={{ opacity: 0, y: 25 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.25 }}
+      transition={{
+        duration: 0.7,
+        delay: Math.min(index * 0.08, 0.24),
+        ease: "easeOut",
+      }}
+      className="
+        relative
+        flex items-start
+        gap-5
+        sm:gap-8
+      "
     >
-      {/* COLUMNA DEL ICONO Y LÍNEA */}
-      <div className="relative flex flex-col items-center shrink-0">
+      {/* ======================================
+          LÍNEA VERTICAL DORADA
+      ====================================== */}
 
-        {/* ICONO CIRCULAR */}
+      {!ultimo && (
         <div
           className="
-            relative z-10
-            flex h-16 w-16
-            sm:h-20 sm:w-20
-            items-center justify-center
-            rounded-full
-            border border-[#B88A8A]/55
-            bg-[#F8F2ED]
-            shadow-[0_8px_25px_rgba(74,20,29,0.10)]
+            pointer-events-none
+            absolute
+            left-[32px]
+            top-[64px]
+            bottom-0
+            w-px
+            bg-[#C6A57B]
+            sm:left-[40px]
+            sm:top-[80px]
           "
-        >
-          <Icono
-            size={29}
-            strokeWidth={1.4}
-            className="text-[#4A141D]"
-          />
-        </div>
+        />
+      )}
 
-        {/* LÍNEA VERTICAL */}
-        {!ultimo && (
-          <div
-            className="
-              absolute top-16 bottom-[-2.5rem]
-              sm:top-20
-              w-[2px]
-              bg-[#B88A8A]/55
-            "
-          />
-        )}
-      </div>
+      {/* ======================================
+          ICONO DEL EVENTO
+      ====================================== */}
 
-      {/* INFORMACIÓN DEL EVENTO */}
       <div
         className="
-          flex-1
-          min-w-0
-          pb-10
-          sm:pb-12
+          relative z-10
+          flex shrink-0
+          h-16 w-16
+          items-center justify-center
+          rounded-full
+          border border-[#C6A57B]
+          bg-[#FAF7F1]
+          sm:h-20 sm:w-20
         "
       >
+        {/* CÍRCULO INTERIOR */}
+
         <div
           className="
-            rounded-2xl
-            border border-[#B88A8A]/30
-            bg-[#F8F2ED]/70
-            px-5 py-5
-            sm:px-8 sm:py-6
-            transition-all duration-300
-            hover:border-[#B88A8A]/70
-            hover:shadow-[0_10px_30px_rgba(74,20,29,0.08)]
+            pointer-events-none
+            absolute inset-[4px]
+            rounded-full
+            border border-[#C6A57B]/35
+          "
+        />
+
+        <Icono
+          strokeWidth={1.2}
+          className="
+            h-7 w-7
+            text-[#1D344C]
+            sm:h-9 sm:w-9
+          "
+        />
+      </div>
+
+      {/* ======================================
+          INFORMACIÓN DEL EVENTO
+      ====================================== */}
+
+      <div
+        className={`
+          flex min-w-0 flex-1
+          flex-col justify-center
+          min-h-[64px]
+          pt-2
+          sm:min-h-[80px]
+          sm:pt-3
+          ${ultimo ? "pb-2" : "pb-10 sm:pb-12"}
+        `}
+      >
+        {/* HORA */}
+
+        <p
+          className="
+            font-playfair
+            font-medium
+            text-[13px]
+            tracking-[0.12em]
+            text-[#92754D]
+            sm:text-base
           "
         >
-          {/* HORA */}
-          <p
-            className="
-              mb-2
-              text-xs sm:text-sm
-              font-semibold
-              uppercase
-              tracking-[0.22em]
-              text-[#9B626B]
-            "
-          >
-            {hora}
-          </p>
+          {hora}
+        </p>
 
-          {/* NOMBRE DEL EVENTO */}
-          <h3
-            className="
-              font-playfair
-              text-xl sm:text-2xl
-              leading-snug
-              text-[#4A141D]
-            "
-          >
-            {titulo}
-          </h3>
-        </div>
+        {/* NOMBRE DEL EVENTO */}
+
+        <h3
+          className="
+            mt-2
+            font-playfair
+            font-normal
+            text-[23px]
+            leading-snug
+            text-[#1D344C]
+            sm:text-[28px]
+            lg:text-[30px]
+          "
+        >
+          {titulo}
+        </h3>
       </div>
-    </motion.div>
+    </motion.li>
   );
 };
 
@@ -181,168 +259,178 @@ const Itinerario = () => {
         relative
         w-full
         overflow-hidden
-        bg-[#4A141D]
-        px-5
-        py-20 sm:py-28
+        bg-[#FAF7F1]
+        px-5 py-20
+        sm:px-10 sm:py-28
       "
     >
-      {/* DECORACIONES DEL FONDO */}
-      <div
+      {/* ======================================
+          HOJAS EN LA ESQUINA SUPERIOR
+      ====================================== */}
+
+      <Rama
         className="
           pointer-events-none
-          absolute -left-36 top-20
-          h-80 w-80
-          rounded-full
-          border border-[#B88A8A]/15
+          absolute
+          -left-10 -top-12
+          w-40
+          rotate-[110deg]
+          opacity-75
+          sm:w-56
+          lg:w-72
         "
       />
 
-      <div
+      {/* ======================================
+          HOJAS EN LA ESQUINA INFERIOR
+      ====================================== */}
+
+      <Rama
         className="
           pointer-events-none
-          absolute -right-36 bottom-20
-          h-80 w-80
-          rounded-full
-          border border-[#B88A8A]/15
+          absolute
+          -right-10 -bottom-12
+          w-40
+          -rotate-[70deg]
+          opacity-75
+          sm:w-56
+          lg:w-72
         "
       />
 
-      <div className="relative z-10 mx-auto max-w-5xl">
+      {/* ======================================
+          CONTENEDOR PRINCIPAL
+      ====================================== */}
 
-        {/* ======================================
-            TARJETA PRINCIPAL CHAMPAGNE
-        ====================================== */}
+      <div
+        className="
+          relative z-10
+          mx-auto max-w-4xl
+        "
+      >
+        {/* ==================================
+            ENCABEZADO
+        ================================== */}
+
         <motion.div
-          initial={{ opacity: 0, y: 45 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
           transition={{
             duration: 0.9,
-            ease: [0.22, 1, 0.36, 1],
+            ease: "easeOut",
           }}
-          viewport={{ once: true, amount: 0.1 }}
-          className="
-            relative
-            overflow-hidden
-            rounded-tl-[4rem]
-            rounded-br-[4rem]
-            rounded-tr-2xl
-            rounded-bl-2xl
-            border border-[#B88A8A]/35
-            bg-[#F4E8DD]
-            px-6 py-14
-            sm:px-12 sm:py-16
-            shadow-[0_25px_70px_rgba(0,0,0,0.25)]
-          "
+          className="text-center"
         >
-          {/* ENCABEZADO */}
-          <div className="text-center">
+        
 
-            <p
-              className="
-                mb-4
-                text-xs sm:text-sm
-                font-semibold
-                uppercase
-                tracking-[0.35em]
-                text-[#9B626B]
-              "
-            >
-              Momentos especiales
-            </p>
+          {/* TÍTULO PRINCIPAL */}
 
-            <h2
-              className="
-                font-playfair
-                text-4xl sm:text-5xl md:text-6xl
-                text-[#4A141D]
-              "
-            >
-              Itinerario
-            </h2>
+          <h2
+            className="
+              mt-5
+              font-playfair
+              font-normal italic
+              text-[48px]
+              leading-tight
+              text-[#1D344C]
+              sm:text-6xl
+              lg:text-7xl
+            "
+          >
+            {CONFIG.titulo}
+          </h2>
 
-            {/* SEPARADOR */}
-            <div className="mx-auto my-8 h-px w-24 bg-[#B88A8A]" />
+          {/* SEPARADOR SENCILLO */}
 
-            <p
-              className="
-                mx-auto max-w-xl
-                font-playfair
-                text-base sm:text-lg
-                leading-relaxed
-                text-[#4A141D]/75
-              "
-            >
-              Cada instante será parte de una historia
-              inolvidable. Acompáñanos a celebrar
-              cada momento.
-            </p>
-          </div>
+          <div
+            className="
+              mx-auto my-7
+              h-px w-16
+              bg-[#C6A57B]
+              sm:my-9 sm:w-24
+            "
+          />
 
-          {/* ======================================
-              LÍNEA DE TIEMPO
-          ====================================== */}
-          <motion.div
-            initial="oculto"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{
-              staggerChildren: 0.12,
-            }}
+          {/* DESCRIPCIÓN */}
+
+          <p
             className="
               mx-auto
-              mt-14
-              max-w-2xl
+              max-w-xl
+              px-3
+              font-playfair
+              text-[17px]
+              leading-relaxed
+              text-[#1D344C]/90
+              sm:text-xl
+              sm:leading-loose
             "
           >
-            {eventos.map((evento, index) => (
-              <EventoItinerario
-                key={`${evento.titulo}-${index}`}
-                {...evento}
-                ultimo={index === eventos.length - 1}
-              />
-            ))}
-          </motion.div>
+            {CONFIG.descripcion}
+          </p>
+        </motion.div>
 
-          {/* FRASE FINAL */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="mt-4 text-center"
-          >
-            <div className="mx-auto mb-6 h-px w-24 bg-[#B88A8A]" />
+        {/* ==================================
+            LÍNEA DE TIEMPO
+        ================================== */}
 
-            <p
-              className="
-                font-cursiveDancing
-                text-3xl sm:text-4xl
-                text-[#4A141D]
-              "
-            >
-              ¡Te esperamos!
-            </p>
-          </motion.div>
+        <ol
+          className="
+            relative
+            mx-auto mt-12
+            max-w-[350px]
+            sm:mt-16
+            sm:max-w-[480px]
+            lg:max-w-[520px]
+          "
+        >
+          {eventos.map((evento, index) => (
+            <EventoItinerario
+              key={`${evento.titulo}-${index}`}
+              {...evento}
+              index={index}
+              ultimo={index === eventos.length - 1}
+            />
+          ))}
+        </ol>
 
-          {/* DETALLES DECORATIVOS */}
+        {/* ==================================
+            FRASE FINAL
+        ================================== */}
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="
+            mt-12
+            text-center
+            sm:mt-16
+          "
+        >
           <div
             className="
-              absolute top-0 left-1/2
-              h-[3px] w-28
-              -translate-x-1/2
-              bg-[#B88A8A]
+              mx-auto mb-6
+              h-px w-16
+              bg-[#C6A57B]
+              sm:w-24
             "
           />
 
-          <div
+          <p
             className="
-              absolute bottom-0 left-1/2
-              h-[3px] w-28
-              -translate-x-1/2
-              bg-[#B88A8A]
+              font-playfair
+              font-normal italic
+              text-[30px]
+              text-[#1D344C]
+              sm:text-[38px]
+              lg:text-[42px]
             "
-          />
-
+          >
+            {CONFIG.fraseFinal}
+          </p>
         </motion.div>
       </div>
     </section>

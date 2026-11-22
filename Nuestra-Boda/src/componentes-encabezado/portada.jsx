@@ -9,8 +9,7 @@ const CONFIG = {
   novio: "Abraham",
   novia: "Janette",
   fecha: "10 de Abril de 2027",
-  subtitulo: "Nuestra Boda",
-  imagen: "/portada.jpg",
+  imagen: "/portada.png",
 };
 
 // ==========================================
@@ -41,6 +40,7 @@ export default function Portada() {
           w-full h-full
           object-cover
           object-[center_35%]
+          md:object-[center_40%]
         "
       />
 
@@ -49,7 +49,7 @@ export default function Portada() {
       ====================================== */}
 
       <motion.div
-        initial={{ opacity: 0, y: 25 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
           duration: 1.5,
@@ -62,61 +62,52 @@ export default function Portada() {
           flex-col
           items-center
           justify-end
-          px-5 pb-20
+          px-3
+          pb-8
           text-center
-          text-white
-          sm:px-8
-          sm:pb-24
-          lg:pb-28
+          text-[#FAF7F1]
+          sm:px-6
+          sm:pb-12
+          lg:pb-16
         "
         style={{
-          textShadow: "0 2px 12px rgba(0,0,0,0.45)",
+          textShadow: `
+            0 2px 4px rgba(0,0,0,0.85),
+            0 3px 12px rgba(0,0,0,0.65),
+            0 0 24px rgba(0,0,0,0.35)
+          `,
         }}
       >
-        {/* SUBTÍTULO */}
-
-        <p
-          className="
-            mb-6
-            font-playfair
-            text-[11px]
-            uppercase
-            tracking-[0.45em]
-            sm:text-sm
-          "
-        >
-          {CONFIG.subtitulo}
-        </p>
-
-        {/* NOMBRES DE LOS NOVIOS */}
+        {/* ======================================
+            NOMBRES DE LOS NOVIOS
+        ====================================== */}
 
         <h1
           className="
-            flex flex-col
-            items-center
+            flex flex-row
+            items-baseline
             justify-center
+            gap-2
+            whitespace-nowrap
             font-playfair
             font-normal
             italic
-            leading-none
-            text-[48px]
-            sm:text-[65px]
-            md:text-[80px]
-            lg:flex-row
-            lg:gap-6
-            lg:text-[95px]
+            leading-tight
+            text-[clamp(26px,8.5vw,46px)]
+            sm:gap-3
+            sm:text-[58px]
+            md:text-[72px]
+            lg:gap-5
+            lg:text-[90px]
           "
         >
           <span>{CONFIG.novio}</span>
 
           <span
             className="
-              my-1
-              text-[32px]
+              text-[0.65em]
               font-normal
-              sm:text-[42px]
-              lg:my-0
-              lg:text-[55px]
+              italic
             "
           >
             &amp;
@@ -125,36 +116,50 @@ export default function Portada() {
           <span>{CONFIG.novia}</span>
         </h1>
 
-        {/* SEPARADOR CLÁSICO */}
+        {/* ======================================
+            SEPARADOR ORNAMENTAL CLÁSICO
+        ====================================== */}
 
         <div
           className="
-            my-7
+            my-3
             flex items-center
             justify-center
             gap-3
-            sm:my-9
+            sm:my-5
+            lg:my-6
           "
           aria-hidden="true"
+          style={{
+            filter:
+              "drop-shadow(0 2px 3px rgba(0,0,0,0.8))",
+          }}
         >
-          <span className="h-px w-12 bg-white/80 sm:w-20" />
+          <span
+            className="
+              h-px w-10
+              bg-[#FAF7F1]/90
+              sm:w-16
+              lg:w-24
+            "
+          />
 
           <svg
-            width="38"
-            height="17"
+            width="34"
+            height="15"
             viewBox="0 0 38 17"
             fill="none"
           >
             <path
               d="M1 8.5H10L19 1L28 8.5H37"
               stroke="currentColor"
-              strokeWidth="0.8"
+              strokeWidth="0.9"
             />
 
             <path
               d="M1 8.5H10L19 16L28 8.5H37"
               stroke="currentColor"
-              strokeWidth="0.8"
+              strokeWidth="0.9"
             />
 
             <circle
@@ -165,20 +170,31 @@ export default function Portada() {
             />
           </svg>
 
-          <span className="h-px w-12 bg-white/80 sm:w-20" />
+          <span
+            className="
+              h-px w-10
+              bg-[#FAF7F1]/90
+              sm:w-16
+              lg:w-24
+            "
+          />
         </div>
 
-        {/* FECHA DE LA BODA */}
+        {/* ======================================
+            FECHA DE LA BODA
+        ====================================== */}
 
         <p
           className="
             font-playfair
-            text-[13px]
+            font-medium
+            text-[12px]
             uppercase
             tracking-[0.22em]
-            sm:text-base
-            sm:tracking-[0.30em]
+            sm:text-[15px]
+            sm:tracking-[0.28em]
             lg:text-lg
+            lg:tracking-[0.35em]
           "
         >
           {CONFIG.fecha}
