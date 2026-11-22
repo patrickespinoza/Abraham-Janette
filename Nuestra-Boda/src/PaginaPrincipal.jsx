@@ -7,8 +7,9 @@ import Confirmacion from "./componentes-encabezado/Confirmacion";
 import Musica from "./componentes-encabezado/musica";
 import Padres from "./componentes-encabezado/Padres";
 import Itinerario from "./componentes-encabezado/Itinerario";
-import Frase from "./componentes-encabezado/frase";
+import Frase from "./componentes-encabezado/Frase";
 import Galeria from "./componentes-encabezado/Galeria";
+import FinalBoda from "./componentes-encabezado/Final";
 
 export default function PaginaPrincipal() {
   return (
@@ -35,6 +36,8 @@ export default function PaginaPrincipal() {
       <Regalos />
 
       <Confirmacion />
+
+      <FinalBoda/>
 
     </div>
   );
