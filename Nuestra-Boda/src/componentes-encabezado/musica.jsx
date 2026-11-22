@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -94,7 +95,7 @@ const Cargando = () => (
 // COMPONENTE PRINCIPAL
 // ==========================================
 
-const Musica = () => {
+export default function Musica() {
   const audioRef = useRef(null);
 
   const [mostrarModal, setMostrarModal] = useState(true);
@@ -146,7 +147,6 @@ const Musica = () => {
 
       audio.removeEventListener("pause", detectarPausa);
       audio.removeEventListener("error", detectarError);
-
       audio.removeEventListener(
         "volumechange",
         detectarVolumen
@@ -259,11 +259,16 @@ const Musica = () => {
 
   return (
     <>
+      {/* ======================================
+          ANIMACIÓN DEL DISCO
+      ====================================== */}
+
       <style>{`
         @keyframes wedly-girar-disco {
           from {
             transform: rotate(0deg);
           }
+
           to {
             transform: rotate(360deg);
           }
@@ -337,7 +342,9 @@ const Musica = () => {
                 ease: "easeOut",
               }}
             >
-              {/* MARCO DORADO */}
+              {/* ======================================
+                  MARCO DORADO
+              ====================================== */}
 
               <div
                 className="
@@ -369,7 +376,9 @@ const Musica = () => {
                   "
                 />
 
-                {/* BOTÓN CERRAR */}
+                {/* ======================================
+                    BOTÓN CERRAR
+                ====================================== */}
 
                 <button
                   type="button"
@@ -388,54 +397,63 @@ const Musica = () => {
                   <X size={18} strokeWidth={1.5} />
                 </button>
 
-                {/* CONTENIDO PRINCIPAL */}
+                {/* ======================================
+                    CONTENIDO PRINCIPAL
+                ====================================== */}
 
                 <div className="relative z-10">
 
-                  {/* MONOGRAMA */}
+                  {/* ======================================
+                      MONOGRAMA CALIGRÁFICO
+                  ====================================== */}
 
-   
+                  <motion.div
+                    className="
+                      mx-auto mb-4
+                      flex h-[76px] w-[76px]
+                      items-center justify-center
+                      rounded-full
+                      border border-[#C6A57B]
+                    "
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{
+                      duration: 0.7,
+                      delay: 0.2,
+                    }}
+                  >
+                    <div
+                      className="
+                        flex items-center
+                        justify-center
+                        gap-1.5
+                        font-caligrafia
+                        font-normal
+                        text-[39px]
+                        leading-none
+                        text-[#1D344C]
+                      "
+                    >
+                      <span>
+                        {CONFIG.inicialNovio}
+                      </span>
 
-<motion.div
-  className="
-    mx-auto mb-4
-    flex h-[76px] w-[76px]
-    items-center justify-center
-    rounded-full
-    border border-[#C6A57B]
-  "
-  initial={{ opacity: 0 }}
-  animate={{ opacity: 1 }}
-  transition={{
-    duration: 0.7,
-    delay: 0.2,
-  }}
->
-  <div
-    className="
-      flex items-center
-      justify-center
-      gap-1.5
-      font-caligrafia
-      font-normal
-      text-[39px]
-      leading-none
-      text-[#1D344C]
-    "
-  >
-    <span>{CONFIG.inicialNovio}</span>
+                      <span
+                        className="
+                          h-9 w-px
+                          bg-[#C6A57B]
+                        "
+                      />
 
-    <span
-      className="
-        h-9 w-px
-        bg-[#C6A57B]
-      "
-    />
+                      <span>
+                        {CONFIG.inicialNovia}
+                      </span>
+                    </div>
+                  </motion.div>
 
-    <span>{CONFIG.inicialNovia}</span>
-  </div>
-</motion.div>
-                  {/* SUBTÍTULO */}
+                  {/* ======================================
+                      SUBTÍTULO
+                  ====================================== */}
 
                   <p
                     className="
@@ -449,22 +467,26 @@ const Musica = () => {
                     {CONFIG.subtitulo}
                   </p>
 
-                  {/* NOMBRES */}
+                  {/* ======================================
+                      NOMBRES CALIGRÁFICOS
+                  ====================================== */}
 
                   <h2
                     className="
-                      font-playfair
-                      text-[32px]
-                      font-normal italic
+                      font-caligrafia
+                      font-normal
                       leading-tight
                       text-[#1D344C]
-                      sm:text-[38px]
+                      text-[clamp(42px,11vw,52px)]
+                      sm:text-[60px]
                     "
                   >
                     {CONFIG.nombres}
                   </h2>
 
-                  {/* SEPARADOR */}
+                  {/* ======================================
+                      SEPARADOR
+                  ====================================== */}
 
                   <div
                     className="
@@ -473,7 +495,12 @@ const Musica = () => {
                       justify-center gap-3
                     "
                   >
-                    <span className="h-px w-10 bg-[#C6A57B]" />
+                    <span
+                      className="
+                        h-px w-10
+                        bg-[#C6A57B]
+                      "
+                    />
 
                     <Heart
                       size={12}
@@ -481,10 +508,17 @@ const Musica = () => {
                       color={COLORES.dorado}
                     />
 
-                    <span className="h-px w-10 bg-[#C6A57B]" />
+                    <span
+                      className="
+                        h-px w-10
+                        bg-[#C6A57B]
+                      "
+                    />
                   </div>
 
-                  {/* DISCO MUSICAL */}
+                  {/* ======================================
+                      DISCO MUSICAL
+                  ====================================== */}
 
                   <button
                     type="button"
@@ -517,6 +551,8 @@ const Musica = () => {
                         animationPlayState: "running",
                       }}
                     >
+                      {/* SURCOS DEL DISCO */}
+
                       <div
                         className="
                           absolute inset-[5px]
@@ -542,6 +578,8 @@ const Musica = () => {
                         "
                       />
 
+                      {/* CENTRO DEL DISCO */}
+
                       <div
                         className="
                           flex h-10 w-10
@@ -559,7 +597,9 @@ const Musica = () => {
                     </div>
                   </button>
 
-                  {/* TÍTULO */}
+                  {/* ======================================
+                      TÍTULO
+                  ====================================== */}
 
                   <h3
                     className="
@@ -574,7 +614,9 @@ const Musica = () => {
                     {CONFIG.titulo}
                   </h3>
 
-                  {/* DESCRIPCIÓN */}
+                  {/* ======================================
+                      DESCRIPCIÓN
+                  ====================================== */}
 
                   <p
                     className="
@@ -588,7 +630,9 @@ const Musica = () => {
                     {CONFIG.descripcion}
                   </p>
 
-                  {/* BOTONES */}
+                  {/* ======================================
+                      BOTONES
+                  ====================================== */}
 
                   <div className="flex flex-col gap-3">
 
@@ -651,7 +695,9 @@ const Musica = () => {
                     </button>
                   </div>
 
-                  {/* TEXTO FINAL */}
+                  {/* ======================================
+                      TEXTO FINAL
+                  ====================================== */}
 
                   <p
                     className="
@@ -664,6 +710,7 @@ const Musica = () => {
                   >
                     Con mucho amor
                   </p>
+
                 </div>
               </div>
             </motion.div>
@@ -706,7 +753,9 @@ const Musica = () => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
           >
-            {/* DISCO GIRATORIO */}
+            {/* ======================================
+                DISCO GIRATORIO
+            ====================================== */}
 
             <button
               type="button"
@@ -764,18 +813,33 @@ const Musica = () => {
                 {cargando ? (
                   <Cargando />
                 ) : reproduciendo ? (
-                  <Pause size={17} fill="currentColor" />
+                  <Pause
+                    size={17}
+                    fill="currentColor"
+                  />
                 ) : (
-                  <Play size={17} fill="currentColor" />
+                  <Play
+                    size={17}
+                    fill="currentColor"
+                  />
                 )}
               </span>
             </button>
 
-            {/* SEPARADOR */}
+            {/* ======================================
+                SEPARADOR
+            ====================================== */}
 
-            <span className="h-6 w-px bg-[#C6A57B]/60" />
+            <span
+              className="
+                h-6 w-px
+                bg-[#C6A57B]/60
+              "
+            />
 
-            {/* CONTROL DE VOLUMEN */}
+            {/* ======================================
+                CONTROL DE VOLUMEN
+            ====================================== */}
 
             <button
               type="button"
@@ -795,9 +859,15 @@ const Musica = () => {
               "
             >
               {silenciado ? (
-                <VolumeX size={19} strokeWidth={1.7} />
+                <VolumeX
+                  size={19}
+                  strokeWidth={1.7}
+                />
               ) : (
-                <Volume2 size={19} strokeWidth={1.7} />
+                <Volume2
+                  size={19}
+                  strokeWidth={1.7}
+                />
               )}
             </button>
           </motion.div>
@@ -805,6 +875,4 @@ const Musica = () => {
       </AnimatePresence>
     </>
   );
-};
-
-export default Musica;
+}

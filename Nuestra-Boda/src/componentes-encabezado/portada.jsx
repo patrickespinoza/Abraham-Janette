@@ -196,13 +196,13 @@ export default function Portada() {
           className="
             font-playfair
             font-medium
-            text-[12px]
+            text-[17px]
             uppercase
             tracking-[0.22em]
-            sm:text-[15px]
+            sm:text-[20px]
             sm:tracking-[0.28em]
             lg:text-lg
-            lg:tracking-[0.35em]
+            lg:tracking-[0.45em]
           "
         >
           {CONFIG.fecha}

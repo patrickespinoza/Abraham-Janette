@@ -261,7 +261,7 @@ const GrupoPadres = ({
                   ml-2
                   inline-block
                   align-middle
-                  text-[0.8em]
+                  text-[1.5em]
                   font-normal
                   text-[#92754D]
                 "
@@ -356,7 +356,7 @@ const Padres = () => {
             <Ornamento />
           </div>
 
-        
+          
 
           {/* TÍTULO PRINCIPAL */}
 
