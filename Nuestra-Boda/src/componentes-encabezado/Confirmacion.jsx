@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
@@ -21,10 +22,14 @@ const CONFIG = {
   descripcion:
     "Nos encantará contar con tu presencia en este día tan especial.",
 
+  // FECHA LÍMITE DE CONFIRMACIÓN
+  fechaLimite: "30 de enero de 2027",
+
   fraseFinal:
     "¡Gracias por ser parte de nuestra historia!",
 
-  urlScript: "https://script.google.com/macros/s/AKfycbw2S7XaD5xKxmaaGDWMzRTcm2a6C8yv4HLe3NCLrhL51Gr_zy3SXKvZaH8cFH8aJjamSg/exec",
+  urlScript:
+    "https://script.google.com/macros/s/AKfycbw2S7XaD5xKxmaaGDWMzRTcm2a6C8yv4HLe3NCLrhL51Gr_zy3SXKvZaH8cFH8aJjamSg/exec",
 
   // Debe coincidir con Generador.jsx
   claveCifrado: "Wedly-Abraham-Janette-10042027-v1",
@@ -174,14 +179,12 @@ export default function Confirmacion() {
           // Si localStorage no está disponible,
           // se permite utilizar el formulario.
         }
-
       } catch (err) {
         console.error(err);
 
         setErrorInvitacion(
           "No pudimos validar tu invitación. Solicita nuevamente tu enlace personalizado."
         );
-
       } finally {
         setCargando(false);
       }
@@ -291,14 +294,12 @@ export default function Confirmacion() {
       } catch {
         // El registro en Sheets ya se completó.
       }
-
     } catch (err) {
       console.error(err);
 
       setError(
         "No pudimos verificar el registro. Intenta nuevamente en unos momentos."
       );
-
     } finally {
       setEnviando(false);
     }
@@ -345,8 +346,9 @@ export default function Confirmacion() {
         text-[#F1E6D3]
       "
     >
-
-      {/* HOJAS DECORATIVAS */}
+      {/* ======================================
+          HOJAS DECORATIVAS
+      ====================================== */}
 
       <svg
         viewBox="0 0 120 150"
@@ -383,59 +385,104 @@ export default function Confirmacion() {
         transition={{ duration: 0.8 }}
         className="relative z-10 mx-auto max-w-xl"
       >
-
         <div className="border border-[#C6A57B]/70 p-[5px]">
-
-          <div className="
-            border border-[#C6A57B]/40
-            px-5 py-12 sm:px-10 sm:py-16
-          ">
-
-            {/* ENCABEZADO */}
+          <div
+            className="
+              border border-[#C6A57B]/40
+              px-5 py-12 sm:px-10 sm:py-16
+            "
+          >
+            {/* ======================================
+                ENCABEZADO
+            ====================================== */}
 
             <header className="text-center">
-
               <Heart
                 size={32}
                 strokeWidth={1.2}
                 className="mx-auto text-[#C6A57B]"
               />
 
-              <p className="
-                mt-6 text-[10px] uppercase
-                tracking-[0.35em]
-                text-[#C6A57B]
-              ">
+              <p
+                className="
+                  mt-6 text-[10px] uppercase
+                  tracking-[0.35em]
+                  text-[#C6A57B]
+                "
+              >
                 Nuestro gran día
               </p>
 
-              <h2 className="
-                mt-4 font-playfair italic
-                text-[36px] leading-tight
-                sm:text-5xl
-              ">
+              <h2
+                className="
+                  mt-4 font-playfair italic
+                  text-[36px] leading-tight
+                  sm:text-5xl
+                "
+              >
                 {CONFIG.titulo}
               </h2>
 
-              <div className="
-                mx-auto my-7 h-px w-20
-                bg-[#C6A57B]
-              " />
+              <div
+                className="
+                  mx-auto my-7 h-px w-20
+                  bg-[#C6A57B]
+                "
+              />
 
-              <p className="
-                font-playfair text-base
-                leading-relaxed sm:text-lg
-              ">
+              <p
+                className="
+                  font-playfair text-base
+                  leading-relaxed sm:text-lg
+                "
+              >
                 {CONFIG.descripcion}
               </p>
 
+              {/* ======================================
+                  FECHA LÍMITE DE CONFIRMACIÓN
+              ====================================== */}
+
+              <div
+                className="
+                  mx-auto mt-6
+                  max-w-sm
+                  text-center
+                "
+              >
+                <p
+                  className="
+                    font-playfair
+                    text-sm
+                    leading-relaxed
+                    text-[#F1E6D3]
+                    sm:text-base
+                  "
+                >
+                  Favor de confirmar tu asistencia antes del
+                </p>
+
+                <p
+                  className="
+                    mt-2
+                    font-playfair
+                    text-lg
+                    font-semibold
+                    text-[#C6A57B]
+                    sm:text-xl
+                  "
+                >
+                  {CONFIG.fechaLimite}
+                </p>
+              </div>
             </header>
 
-            {/* CARGANDO INVITACIÓN */}
+            {/* ======================================
+                CARGANDO INVITACIÓN
+            ====================================== */}
 
             {cargando && (
               <div className="py-12 text-center">
-
                 <Loader2
                   size={28}
                   className="mx-auto animate-spin text-[#C6A57B]"
@@ -444,66 +491,77 @@ export default function Confirmacion() {
                 <p className="mt-4 font-playfair">
                   Cargando tu invitación...
                 </p>
-
               </div>
             )}
 
-            {/* INVITACIÓN NO VÁLIDA */}
+            {/* ======================================
+                INVITACIÓN NO VÁLIDA
+            ====================================== */}
 
             {!cargando && errorInvitacion && (
-              <div className="
-                mt-8 border border-[#C6A57B]
-                bg-[#F1E6D3] p-6
-                text-center text-[#1D344C]
-              ">
-
+              <div
+                className="
+                  mt-8 border border-[#C6A57B]
+                  bg-[#F1E6D3] p-6
+                  text-center text-[#1D344C]
+                "
+              >
                 <Ticket
                   size={30}
                   strokeWidth={1.3}
                   className="mx-auto text-[#92754D]"
                 />
 
-                <p className="
-                  mt-4 font-playfair
-                  leading-relaxed
-                ">
+                <p
+                  className="
+                    mt-4 font-playfair
+                    leading-relaxed
+                  "
+                >
                   {errorInvitacion}
                 </p>
-
               </div>
             )}
 
-            {/* DATOS DEL INVITADO */}
+            {/* ======================================
+                DATOS DEL INVITADO
+            ====================================== */}
 
             {!cargando && invitado && (
               <>
-
-                <div className="
-                  mt-9 bg-[#F1E6D3]
-                  border border-[#C6A57B]
-                  px-5 py-8
-                  text-center text-[#1D344C]
-                ">
-
-                  <p className="
-                    text-[10px] uppercase
-                    tracking-[0.2em]
-                    text-[#92754D]
-                  ">
+                <div
+                  className="
+                    mt-9 bg-[#F1E6D3]
+                    border border-[#C6A57B]
+                    px-5 py-8
+                    text-center text-[#1D344C]
+                  "
+                >
+                  <p
+                    className="
+                      text-[10px] uppercase
+                      tracking-[0.2em]
+                      text-[#92754D]
+                    "
+                  >
                     Invitación especial para
                   </p>
 
-                  <h3 className="
-                    mt-4 break-words
-                    font-playfair text-3xl
-                  ">
+                  <h3
+                    className="
+                      mt-4 break-words
+                      font-playfair text-3xl
+                    "
+                  >
                     {invitado.nombre}
                   </h3>
 
-                  <div className="
-                    mx-auto my-5 h-px w-14
-                    bg-[#C6A57B]
-                  " />
+                  <div
+                    className="
+                      mx-auto my-5 h-px w-14
+                      bg-[#C6A57B]
+                    "
+                  />
 
                   <Ticket
                     size={36}
@@ -516,37 +574,39 @@ export default function Confirmacion() {
                     {invitado.pases === 1 ? "pase" : "pases"}
                   </p>
 
-                  <p className="
-                    mt-3 text-sm font-playfair
-                    text-[#92754D]
-                  ">
+                  <p
+                    className="
+                      mt-3 text-sm font-playfair
+                      text-[#92754D]
+                    "
+                  >
                     Hemos reservado{" "}
                     {invitado.pases === 1
                       ? "este lugar para ti."
                       : "estos lugares para ustedes."}
                   </p>
-
                 </div>
 
-                {/* FORMULARIO */}
+                {/* ======================================
+                    FORMULARIO
+                ====================================== */}
 
                 {!enviado ? (
                   <form
                     onSubmit={enviarConfirmacion}
                     className="mt-9"
                   >
-
                     <fieldset disabled={enviando}>
-
-                      <p className="
-                        mb-5 text-center
-                        font-playfair text-xl
-                      ">
+                      <p
+                        className="
+                          mb-5 text-center
+                          font-playfair text-xl
+                        "
+                      >
                         ¿Podrás acompañarnos?
                       </p>
 
                       <div className="space-y-3">
-
                         <button
                           type="button"
                           aria-pressed={asistencia === "si"}
@@ -579,10 +639,11 @@ export default function Confirmacion() {
                           <XCircle size={20} />
                           No podré asistir
                         </button>
-
                       </div>
 
-                      {/* SELECCIONAR CONFIRMADOS */}
+                      {/* ======================================
+                          SELECCIONAR CONFIRMADOS
+                      ====================================== */}
 
                       {asistencia === "si" && (
                         <motion.div
@@ -590,7 +651,6 @@ export default function Confirmacion() {
                           animate={{ opacity: 1, y: 0 }}
                           className="mt-7"
                         >
-
                           <label
                             htmlFor="confirmados"
                             className="mb-3 block text-sm"
@@ -606,7 +666,6 @@ export default function Confirmacion() {
                             }
                             className={estiloCampo}
                           >
-
                             {Array.from(
                               { length: invitado.pases },
                               (_, i) => i + 1
@@ -621,16 +680,15 @@ export default function Confirmacion() {
                                   : "personas"}
                               </option>
                             ))}
-
                           </select>
-
                         </motion.div>
                       )}
 
-                      {/* MENSAJE */}
+                      {/* ======================================
+                          MENSAJE
+                      ====================================== */}
 
                       <div className="mt-7">
-
                         <label
                           htmlFor="mensaje"
                           className="mb-3 block text-sm"
@@ -649,10 +707,11 @@ export default function Confirmacion() {
                           placeholder="Escribe tus mejores deseos..."
                           className={`${estiloCampo} resize-y`}
                         />
-
                       </div>
 
-                      {/* ERROR */}
+                      {/* ======================================
+                          ERROR
+                      ====================================== */}
 
                       {error && (
                         <p
@@ -667,7 +726,9 @@ export default function Confirmacion() {
                         </p>
                       )}
 
-                      {/* BOTÓN ENVIAR */}
+                      {/* ======================================
+                          BOTÓN ENVIAR
+                      ====================================== */}
 
                       <button
                         type="submit"
@@ -687,7 +748,6 @@ export default function Confirmacion() {
                           disabled:opacity-50
                         "
                       >
-
                         {enviando ? (
                           <>
                             <Loader2
@@ -698,20 +758,20 @@ export default function Confirmacion() {
                           </>
                         ) : (
                           <>
-                            <Send size={18} strokeWidth={1.5} />
+                            <Send
+                              size={18}
+                              strokeWidth={1.5}
+                            />
                             Enviar confirmación
                           </>
                         )}
-
                       </button>
-
                     </fieldset>
-
                   </form>
-
                 ) : (
-
-                  /* CONFIRMACIÓN EXITOSA */
+                  /* ======================================
+                      CONFIRMACIÓN EXITOSA
+                  ====================================== */
 
                   <motion.div
                     initial={{ opacity: 0, scale: 0.96 }}
@@ -723,31 +783,35 @@ export default function Confirmacion() {
                       text-center text-[#1D344C]
                     "
                   >
-
                     <CheckCircle2
                       size={48}
                       strokeWidth={1.3}
                       className="mx-auto text-[#657358]"
                     />
 
-                    <h3 className="
-                      mt-5 font-playfair text-3xl
-                    ">
+                    <h3
+                      className="
+                        mt-5 font-playfair text-3xl
+                      "
+                    >
                       ¡Gracias por confirmar!
                     </h3>
 
-                    <p className="
-                      mt-4 font-playfair leading-relaxed
-                    ">
+                    <p
+                      className="
+                        mt-4 font-playfair leading-relaxed
+                      "
+                    >
                       Tu respuesta ha sido registrada correctamente.
                     </p>
 
                     {asistencia === "si" ? (
                       <>
-
-                        <p className="
-                          mt-6 font-playfair text-2xl
-                        ">
+                        <p
+                          className="
+                            mt-6 font-playfair text-2xl
+                          "
+                        >
                           {confirmados}{" "}
                           {Number(confirmados) === 1
                             ? "persona confirmada"
@@ -757,7 +821,6 @@ export default function Confirmacion() {
                         <p className="mt-4 font-playfair italic">
                           ¡Nos vemos muy pronto!
                         </p>
-
                       </>
                     ) : (
                       <p className="mt-5 font-playfair italic">
@@ -771,38 +834,36 @@ export default function Confirmacion() {
                       size={25}
                       strokeWidth={1.3}
                     />
-
                   </motion.div>
                 )}
-
               </>
             )}
 
-            {/* FRASE FINAL */}
+            {/* ======================================
+                FRASE FINAL
+            ====================================== */}
 
             <div className="mt-10 text-center">
+              <div
+                className="
+                  mx-auto mb-5 h-px w-14
+                  bg-[#C6A57B]
+                "
+              />
 
-              <div className="
-                mx-auto mb-5 h-px w-14
-                bg-[#C6A57B]
-              " />
-
-              <p className="
-                font-playfair italic
-                text-sm leading-relaxed
-                text-[#F1E6D3]
-              ">
+              <p
+                className="
+                  font-playfair italic
+                  text-sm leading-relaxed
+                  text-[#F1E6D3]
+                "
+              >
                 {CONFIG.fraseFinal}
               </p>
-
             </div>
-
           </div>
-
         </div>
-
       </motion.div>
-
     </section>
   );
 }
