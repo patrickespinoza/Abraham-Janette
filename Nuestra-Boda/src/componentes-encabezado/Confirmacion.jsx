@@ -1,6 +1,12 @@
 
-import React, { useEffect, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import { motion } from "framer-motion";
+
 import {
   Heart,
   Ticket,
@@ -27,18 +33,17 @@ const CONFIG = {
   fraseFinal:
     "¡Gracias por ser parte de nuestra historia!",
 
-  // GOOGLE APPS SCRIPT
-  // No requiere clave ni token de autenticación.
   urlScript:
     "https://script.google.com/macros/s/AKfycbw2S7XaD5xKxmaaGDWMzRTcm2a6C8yv4HLe3NCLrhL51Gr_zy3SXKvZaH8cFH8aJjamSg/exec",
 
-  // Esta clave es SOLO para descifrar el enlace
-  // personalizado. Debe coincidir con Generador.jsx.
-  claveCifrado: "Wedly-Abraham-Janette-10042027-v1",
+  // Solo para descifrar enlaces personalizados.
+  // Debe coincidir con Generador.jsx.
+  claveCifrado:
+    "Wedly-Abraham-Janette-10042027-v1",
 };
 
 // ==========================================
-// DESCIFRADO DEL ENLACE PERSONALIZADO
+// DESCIFRADO AES-GCM
 // ==========================================
 
 const obtenerClave = async () => {
@@ -123,33 +128,53 @@ const descifrarInvitacion = async (token) => {
 // ==========================================
 
 export default function Confirmacion() {
-  const [invitado, setInvitado] = useState(null);
-  const [cargando, setCargando] = useState(true);
+  const [invitado, setInvitado] =
+    useState(null);
 
-  const [asistencia, setAsistencia] = useState("");
-  const [confirmados, setConfirmados] = useState("");
+  const [cargando, setCargando] =
+    useState(true);
 
-  const [mensaje, setMensaje] = useState("");
-
-  const [enviando, setEnviando] = useState(false);
-  const [enviado, setEnviado] = useState(false);
-
-  const [error, setError] = useState("");
-  const [errorInvitacion, setErrorInvitacion] =
+  const [asistencia, setAsistencia] =
     useState("");
 
+  const [confirmados, setConfirmados] =
+    useState("");
+
+  const [mensaje, setMensaje] =
+    useState("");
+
+  const [enviando, setEnviando] =
+    useState(false);
+
+  const [enviado, setEnviado] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
+  const [
+    errorInvitacion,
+    setErrorInvitacion,
+  ] = useState("");
+
+  const formularioRef = useRef(null);
+
+  const iframeRef = useRef(null);
+
   // ========================================
-  // LEER INVITACIÓN DESDE LA URL
+  // CARGAR INVITACIÓN PERSONALIZADA
   // ========================================
 
   useEffect(() => {
     const cargarInvitacion = async () => {
       try {
-        const parametros = new URLSearchParams(
-          window.location.search
-        );
+        const parametros =
+          new URLSearchParams(
+            window.location.search
+          );
 
-        const token = parametros.get("id");
+        const token =
+          parametros.get("id");
 
         if (!token) {
           setErrorInvitacion(
@@ -159,30 +184,35 @@ export default function Confirmacion() {
           return;
         }
 
-        const datos = await descifrarInvitacion(
-          token
-        );
-
-        setInvitado(datos);
-        setConfirmados(String(datos.pases));
-
-        // Recuperar una confirmación guardada
-        // en este navegador.
-
-        try {
-          const guardado = localStorage.getItem(
-            `wedly-confirmacion-${datos.id}`
+        const datos =
+          await descifrarInvitacion(
+            token
           );
 
+        setInvitado(datos);
+
+        setConfirmados(
+          String(datos.pases)
+        );
+
+        try {
+          const guardado =
+            localStorage.getItem(
+              `wedly-confirmacion-${datos.id}`
+            );
+
           if (guardado) {
-            const anterior = JSON.parse(guardado);
+            const anterior =
+              JSON.parse(guardado);
 
             setAsistencia(
               anterior.asistencia || ""
             );
 
             setConfirmados(
-              String(anterior.confirmados)
+              String(
+                anterior.confirmados
+              )
             );
 
             setMensaje(
@@ -192,8 +222,7 @@ export default function Confirmacion() {
             setEnviado(true);
           }
         } catch {
-          // Si localStorage no está disponible,
-          // el formulario sigue funcionando.
+          // El formulario puede continuar.
         }
       } catch (err) {
         console.error(err);
@@ -210,13 +239,17 @@ export default function Confirmacion() {
   }, []);
 
   // ========================================
-  // ENVIAR CONFIRMACIÓN A GOOGLE SHEETS
+  // ENVIAR A GOOGLE SHEETS
   // ========================================
 
-  const enviarConfirmacion = async (e) => {
+  const enviarConfirmacion = (e) => {
     e.preventDefault();
 
-    if (!invitado || enviando || enviado) {
+    if (
+      !invitado ||
+      enviando ||
+      enviado
+    ) {
       return;
     }
 
@@ -224,6 +257,7 @@ export default function Confirmacion() {
       setError(
         "Selecciona si podrás acompañarnos."
       );
+
       return;
     }
 
@@ -235,14 +269,18 @@ export default function Confirmacion() {
     if (
       asistencia === "si" &&
       (
-        !Number.isInteger(numeroConfirmados) ||
+        !Number.isInteger(
+          numeroConfirmados
+        ) ||
         numeroConfirmados < 1 ||
-        numeroConfirmados > invitado.pases
+        numeroConfirmados >
+          invitado.pases
       )
     ) {
       setError(
         `Solo tienes ${invitado.pases} pases disponibles.`
       );
+
       return;
     }
 
@@ -250,88 +288,72 @@ export default function Confirmacion() {
       !CONFIG.urlScript.startsWith(
         "https://script.google.com/macros/s/"
       ) ||
-      !CONFIG.urlScript.endsWith("/exec")
+      !CONFIG.urlScript.endsWith(
+        "/exec"
+      )
     ) {
       setError(
-        "La conexión con Google Sheets no está configurada correctamente."
+        "La conexión con Google Sheets no está configurada."
       );
+
       return;
     }
 
-    setEnviando(true);
     setError("");
+    setEnviando(true);
 
-    // ======================================
-    // SOLO CUATRO DATOS PARA GOOGLE SHEETS
-    // SIN CLAVES NI TOKENS DE AUTENTICACIÓN
-    // ======================================
-
-    const datos = {
-      nombre: invitado.nombre,
-      pases: invitado.pases,
-      confirmados: numeroConfirmados,
-      mensaje: mensaje.trim(),
-    };
+    // Enviar como formulario HTML.
+    // No se requiere clave para Sheets.
 
     try {
-      const respuesta = await fetch(
-        CONFIG.urlScript,
-        {
-          method: "POST",
+      if (!formularioRef.current) {
+        throw new Error(
+          "Formulario no disponible."
+        );
+      }
 
-          headers: {
-            "Content-Type":
-              "text/plain;charset=utf-8",
-          },
+      const formulario =
+        formularioRef.current;
 
-          body: JSON.stringify(datos),
+      const campos = {
+        nombre: invitado.nombre,
+        pases: invitado.pases,
+        confirmados:
+          numeroConfirmados,
+        mensaje: mensaje.trim(),
+      };
+
+      Object.entries(campos).forEach(
+        ([nombre, valor]) => {
+          const campo =
+            formulario.elements.namedItem(
+              nombre
+            );
+
+          if (campo) {
+            campo.value =
+              String(valor);
+          }
         }
       );
 
-      if (!respuesta.ok) {
-        throw new Error(
-          `Error HTTP ${respuesta.status}`
-        );
-      }
+      formulario.submit();
 
-      // El Apps Script debe devolver JSON
-      // con { ok: true } cuando se guarde
-      // correctamente en Google Sheets.
-
-      const resultado = await respuesta.json();
-
-      if (resultado.ok !== true) {
-        throw new Error(
-          resultado.error ||
-          "Google Sheets no confirmó el registro."
-        );
-      }
-
-      // Solo se marca como enviado después
-      // de recibir confirmación del servidor.
+      // La respuesta de Apps Script no puede
+      // verificarse desde este origen.
+      // Por ello se informa que la solicitud
+      // fue enviada, no que Sheets la guardó.
 
       setEnviado(true);
 
-      try {
-        localStorage.setItem(
-          `wedly-confirmacion-${invitado.id}`,
-          JSON.stringify({
-            asistencia,
-            confirmados: numeroConfirmados,
-            mensaje: mensaje.trim(),
-          })
-        );
-      } catch {
-        // El registro en Sheets ya fue confirmado.
-      }
+      // No guardar como "confirmación
+      // verificada" en localStorage.
+
     } catch (err) {
-      console.error(
-        "Error al enviar confirmación:",
-        err
-      );
+      console.error(err);
 
       setError(
-        "No pudimos verificar el registro en Google Sheets. Intenta nuevamente en unos momentos."
+        "No pudimos enviar tu solicitud. Intenta nuevamente."
       );
     } finally {
       setEnviando(false);
@@ -380,6 +402,48 @@ export default function Confirmacion() {
       "
     >
       {/* ======================================
+          FORMULARIO OCULTO PARA APPS SCRIPT
+      ====================================== */}
+
+      <iframe
+        ref={iframeRef}
+        name="wedly-google-sheets"
+        title="Envío de confirmación"
+        className="hidden"
+        tabIndex={-1}
+      />
+
+      <form
+        ref={formularioRef}
+        action={CONFIG.urlScript}
+        method="POST"
+        target="wedly-google-sheets"
+        acceptCharset="UTF-8"
+        className="hidden"
+        aria-hidden="true"
+      >
+        <input
+          type="hidden"
+          name="nombre"
+        />
+
+        <input
+          type="hidden"
+          name="pases"
+        />
+
+        <input
+          type="hidden"
+          name="confirmados"
+        />
+
+        <input
+          type="hidden"
+          name="mensaje"
+        />
+      </form>
+
+      {/* ======================================
           HOJAS DECORATIVAS
       ====================================== */}
 
@@ -412,19 +476,35 @@ export default function Confirmacion() {
       </svg>
 
       <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8 }}
-        className="relative z-10 mx-auto max-w-xl"
+        initial={{
+          opacity: 0,
+          y: 30,
+        }}
+        whileInView={{
+          opacity: 1,
+          y: 0,
+        }}
+        viewport={{
+          once: true,
+        }}
+        transition={{
+          duration: 0.8,
+        }}
+        className="
+          relative z-10
+          mx-auto max-w-xl
+        "
       >
-        <div className="border border-[#C6A57B]/70 p-[5px]">
-          <div
-            className="
-              border border-[#C6A57B]/40
-              px-5 py-12 sm:px-10 sm:py-16
-            "
-          >
+        <div className="
+          border border-[#C6A57B]/70
+          p-[5px]
+        ">
+          <div className="
+            border border-[#C6A57B]/40
+            px-5 py-12
+            sm:px-10 sm:py-16
+          ">
+
             {/* ======================================
                 ENCABEZADO
             ====================================== */}
@@ -433,129 +513,123 @@ export default function Confirmacion() {
               <Heart
                 size={32}
                 strokeWidth={1.2}
-                className="mx-auto text-[#C6A57B]"
+                className="
+                  mx-auto text-[#C6A57B]
+                "
               />
 
-              <p
-                className="
-                  mt-6 text-[10px] uppercase
-                  tracking-[0.35em]
-                  text-[#C6A57B]
-                "
-              >
+              <p className="
+                mt-6 text-[10px]
+                uppercase
+                tracking-[0.35em]
+                text-[#C6A57B]
+              ">
                 Nuestro gran día
               </p>
 
-              <h2
-                className="
-                  mt-4 font-playfair italic
-                  text-[36px] leading-tight
-                  sm:text-5xl
-                "
-              >
+              <h2 className="
+                mt-4 font-playfair
+                italic text-[36px]
+                leading-tight sm:text-5xl
+              ">
                 {CONFIG.titulo}
               </h2>
 
-              <div
-                className="
-                  mx-auto my-7 h-px w-20
-                  bg-[#C6A57B]
-                "
-              />
+              <div className="
+                mx-auto my-7
+                h-px w-20
+                bg-[#C6A57B]
+              " />
 
-              <p
-                className="
-                  font-playfair text-base
-                  leading-relaxed sm:text-lg
-                "
-              >
+              <p className="
+                font-playfair
+                text-base
+                leading-relaxed
+                sm:text-lg
+              ">
                 {CONFIG.descripcion}
               </p>
 
-              {/* ======================================
-                  FECHA LÍMITE
-              ====================================== */}
+              {/* FECHA LÍMITE */}
 
-              <div
-                className="
-                  mx-auto mt-6
-                  max-w-sm
-                  text-center
-                "
-              >
-                <p
-                  className="
-                    font-playfair
-                    text-sm
-                    leading-relaxed
-                    text-[#F1E6D3]
-                    sm:text-base
-                  "
-                >
-                  Favor de confirmar tu asistencia
-                  antes del
+              <div className="
+                mx-auto mt-6
+                max-w-sm
+                text-center
+              ">
+                <p className="
+                  font-playfair
+                  text-sm
+                  leading-relaxed
+                  sm:text-base
+                ">
+                  Favor de confirmar tu
+                  asistencia antes del
                 </p>
 
-                <p
-                  className="
-                    mt-2
-                    font-playfair
-                    text-lg
-                    font-semibold
-                    text-[#C6A57B]
-                    sm:text-xl
-                  "
-                >
+                <p className="
+                  mt-2 font-playfair
+                  text-lg font-semibold
+                  text-[#C6A57B]
+                  sm:text-xl
+                ">
                   {CONFIG.fechaLimite}
                 </p>
               </div>
             </header>
 
             {/* ======================================
-                CARGANDO INVITACIÓN
+                CARGANDO
             ====================================== */}
 
             {cargando && (
-              <div className="py-12 text-center">
+              <div className="
+                py-12 text-center
+              ">
                 <Loader2
                   size={28}
-                  className="mx-auto animate-spin text-[#C6A57B]"
+                  className="
+                    mx-auto animate-spin
+                    text-[#C6A57B]
+                  "
                 />
 
-                <p className="mt-4 font-playfair">
+                <p className="
+                  mt-4 font-playfair
+                ">
                   Cargando tu invitación...
                 </p>
               </div>
             )}
 
             {/* ======================================
-                INVITACIÓN NO VÁLIDA
+                ERROR DE INVITACIÓN
             ====================================== */}
 
-            {!cargando && errorInvitacion && (
-              <div
-                className="
-                  mt-8 border border-[#C6A57B]
-                  bg-[#F1E6D3] p-6
-                  text-center text-[#1D344C]
-                "
-              >
-                <Ticket
-                  size={30}
-                  strokeWidth={1.3}
-                  className="mx-auto text-[#92754D]"
-                />
+            {!cargando &&
+              errorInvitacion && (
+                <div className="
+                  mt-8 border
+                  border-[#C6A57B]
+                  bg-[#F1E6D3]
+                  p-6 text-center
+                  text-[#1D344C]
+                ">
+                  <Ticket
+                    size={30}
+                    className="
+                      mx-auto text-[#92754D]
+                    "
+                  />
 
-                <p
-                  className="
+                  <p className="
                     mt-4 font-playfair
                     leading-relaxed
-                  "
-                >
-                  {errorInvitacion}
-                </p>
-              </div>
-            )}
+                  ">
+                    {errorInvitacion}
+                  </p>
+                </div>
+              )}
 
             {/* ======================================
                 DATOS DEL INVITADO
@@ -563,59 +637,57 @@ export default function Confirmacion() {
 
             {!cargando && invitado && (
               <>
-                <div
-                  className="
-                    mt-9 bg-[#F1E6D3]
-                    border border-[#C6A57B]
-                    px-5 py-8
-                    text-center text-[#1D344C]
-                  "
-                >
-                  <p
-                    className="
-                      text-[10px] uppercase
-                      tracking-[0.2em]
-                      text-[#92754D]
-                    "
-                  >
+                <div className="
+                  mt-9 bg-[#F1E6D3]
+                  border border-[#C6A57B]
+                  px-5 py-8
+                  text-center text-[#1D344C]
+                ">
+                  <p className="
+                    text-[10px] uppercase
+                    tracking-[0.2em]
+                    text-[#92754D]
+                  ">
                     Invitación especial para
                   </p>
 
-                  <h3
-                    className="
-                      mt-4 break-words
-                      font-playfair text-3xl
-                    "
-                  >
+                  <h3 className="
+                    mt-4 break-words
+                    font-playfair
+                    text-3xl
+                  ">
                     {invitado.nombre}
                   </h3>
 
-                  <div
-                    className="
-                      mx-auto my-5 h-px w-14
-                      bg-[#C6A57B]
-                    "
-                  />
+                  <div className="
+                    mx-auto my-5
+                    h-px w-14
+                    bg-[#C6A57B]
+                  " />
 
                   <Ticket
                     size={36}
                     strokeWidth={1.2}
-                    className="mx-auto text-[#92754D]"
+                    className="
+                      mx-auto text-[#92754D]
+                    "
                   />
 
-                  <p className="mt-4 font-playfair text-3xl">
+                  <p className="
+                    mt-4 font-playfair
+                    text-3xl
+                  ">
                     {invitado.pases}{" "}
                     {invitado.pases === 1
                       ? "pase"
                       : "pases"}
                   </p>
 
-                  <p
-                    className="
-                      mt-3 text-sm font-playfair
-                      text-[#92754D]
-                    "
-                  >
+                  <p className="
+                    mt-3 text-sm
+                    font-playfair
+                    text-[#92754D]
+                  ">
                     Hemos reservado{" "}
                     {invitado.pases === 1
                       ? "este lugar para ti."
@@ -629,23 +701,28 @@ export default function Confirmacion() {
 
                 {!enviado ? (
                   <form
-                    onSubmit={enviarConfirmacion}
+                    onSubmit={
+                      enviarConfirmacion
+                    }
                     className="mt-9"
                   >
-                    <fieldset disabled={enviando}>
-                      <p
-                        className="
-                          mb-5 text-center
-                          font-playfair text-xl
-                        "
-                      >
+                    <fieldset
+                      disabled={enviando}
+                    >
+                      <p className="
+                        mb-5 text-center
+                        font-playfair
+                        text-xl
+                      ">
                         ¿Podrás acompañarnos?
                       </p>
 
                       <div className="space-y-3">
                         <button
                           type="button"
-                          aria-pressed={asistencia === "si"}
+                          aria-pressed={
+                            asistencia === "si"
+                          }
                           onClick={() => {
                             setAsistencia("si");
 
@@ -653,35 +730,45 @@ export default function Confirmacion() {
                               Number(confirmados) < 1
                             ) {
                               setConfirmados(
-                                String(invitado.pases)
+                                String(
+                                  invitado.pases
+                                )
                               );
                             }
 
                             setError("");
                           }}
-                          className={estiloOpcion("si")}
+                          className={
+                            estiloOpcion("si")
+                          }
                         >
-                          <CheckCircle2 size={20} />
+                          <CheckCircle2
+                            size={20}
+                          />
                           Sí, con mucho gusto
                         </button>
 
                         <button
                           type="button"
-                          aria-pressed={asistencia === "no"}
+                          aria-pressed={
+                            asistencia === "no"
+                          }
                           onClick={() => {
                             setAsistencia("no");
                             setError("");
                           }}
-                          className={estiloOpcion("no")}
+                          className={
+                            estiloOpcion("no")
+                          }
                         >
-                          <XCircle size={20} />
+                          <XCircle
+                            size={20}
+                          />
                           No podré asistir
                         </button>
                       </div>
 
-                      {/* ======================================
-                          NÚMERO DE PERSONAS
-                      ====================================== */}
+                      {/* NÚMERO DE PERSONAS */}
 
                       {asistencia === "si" && (
                         <motion.div
@@ -697,9 +784,13 @@ export default function Confirmacion() {
                         >
                           <label
                             htmlFor="confirmados"
-                            className="mb-3 block text-sm"
+                            className="
+                              mb-3 block
+                              text-sm
+                            "
                           >
-                            Número de personas que asistirán
+                            Número de personas
+                            que asistirán
                           </label>
 
                           <select
@@ -710,7 +801,9 @@ export default function Confirmacion() {
                                 e.target.value
                               )
                             }
-                            className={estiloCampo}
+                            className={
+                              estiloCampo
+                            }
                           >
                             {Array.from(
                               {
@@ -733,14 +826,15 @@ export default function Confirmacion() {
                         </motion.div>
                       )}
 
-                      {/* ======================================
-                          MENSAJE OPCIONAL
-                      ====================================== */}
+                      {/* MENSAJE */}
 
                       <div className="mt-7">
                         <label
                           htmlFor="mensaje"
-                          className="mb-3 block text-sm"
+                          className="
+                            mb-3 block
+                            text-sm
+                          "
                         >
                           Mensaje para los novios
                           (opcional)
@@ -757,19 +851,20 @@ export default function Confirmacion() {
                           rows={4}
                           maxLength={1500}
                           placeholder="Escribe tus mejores deseos..."
-                          className={`${estiloCampo} resize-y`}
+                          className={
+                            `${estiloCampo} resize-y`
+                          }
                         />
                       </div>
 
-                      {/* ======================================
-                          ERROR
-                      ====================================== */}
+                      {/* ERROR */}
 
                       {error && (
                         <p
                           role="alert"
                           className="
-                            mt-4 border border-red-300
+                            mt-4 border
+                            border-red-300
                             bg-red-50 p-3
                             text-sm text-red-800
                           "
@@ -778,16 +873,15 @@ export default function Confirmacion() {
                         </p>
                       )}
 
-                      {/* ======================================
-                          BOTÓN ENVIAR
-                      ====================================== */}
+                      {/* BOTÓN */}
 
                       <button
                         type="submit"
                         disabled={enviando}
                         className="
                           mt-7 flex w-full
-                          items-center justify-center gap-3
+                          items-center
+                          justify-center gap-3
                           bg-[#C6A57B]
                           border border-[#C6A57B]
                           px-5 py-4
@@ -804,7 +898,9 @@ export default function Confirmacion() {
                           <>
                             <Loader2
                               size={18}
-                              className="animate-spin"
+                              className="
+                                animate-spin
+                              "
                             />
                             Enviando...
                           </>
@@ -822,7 +918,7 @@ export default function Confirmacion() {
                   </form>
                 ) : (
                   /* ======================================
-                      CONFIRMACIÓN EXITOSA
+                      SOLICITUD ENVIADA
                   ====================================== */
 
                   <motion.div
@@ -835,66 +931,76 @@ export default function Confirmacion() {
                       scale: 1,
                     }}
                     className="
-                      mt-8 border border-[#C6A57B]
+                      mt-8 border
+                      border-[#C6A57B]
                       bg-[#F1E6D3]
                       px-5 py-9
-                      text-center text-[#1D344C]
+                      text-center
+                      text-[#1D344C]
                     "
                   >
                     <CheckCircle2
                       size={48}
                       strokeWidth={1.3}
-                      className="mx-auto text-[#657358]"
+                      className="
+                        mx-auto
+                        text-[#657358]
+                      "
                     />
 
-                    <h3
-                      className="
-                        mt-5 font-playfair text-3xl
-                      "
-                    >
-                      ¡Gracias por confirmar!
+                    <h3 className="
+                      mt-5 font-playfair
+                      text-3xl
+                    ">
+                      Solicitud enviada
                     </h3>
 
-                    <p
-                      className="
-                        mt-4 font-playfair
-                        leading-relaxed
-                      "
-                    >
-                      Tu respuesta ha sido registrada correctamente.
+                    <p className="
+                      mt-4 font-playfair
+                      leading-relaxed
+                    ">
+                      Hemos enviado tu
+                      respuesta para su
+                      registro.
                     </p>
 
                     {asistencia === "si" ? (
                       <>
-                        <p
-                          className="
-                            mt-6 font-playfair
-                            text-2xl
-                          "
-                        >
+                        <p className="
+                          mt-6 font-playfair
+                          text-2xl
+                        ">
                           {confirmados}{" "}
                           {Number(
                             confirmados
                           ) === 1
-                            ? "persona confirmada"
-                            : "personas confirmadas"}
+                            ? "persona indicada"
+                            : "personas indicadas"}
                         </p>
 
-                        <p className="mt-4 font-playfair italic">
-                          ¡Nos vemos muy pronto!
+                        <p className="
+                          mt-4 font-playfair
+                          italic
+                        ">
+                          ¡Esperamos verte
+                          muy pronto!
                         </p>
                       </>
                     ) : (
-                      <p className="mt-5 font-playfair italic">
-                        Agradecemos mucho tu
-                        respuesta. Te tendremos
-                        presente en nuestro día
-                        especial.
+                      <p className="
+                        mt-5 font-playfair
+                        italic
+                      ">
+                        Agradecemos mucho
+                        tu respuesta.
                       </p>
                     )}
 
                     <Heart
-                      className="mx-auto mt-6 text-[#92754D]"
+                      className="
+                        mx-auto mt-6
+                        text-[#92754D]
+                      "
                       size={25}
                       strokeWidth={1.3}
                     />
@@ -907,24 +1013,24 @@ export default function Confirmacion() {
                 FRASE FINAL
             ====================================== */}
 
-            <div className="mt-10 text-center">
-              <div
-                className="
-                  mx-auto mb-5 h-px w-14
-                  bg-[#C6A57B]
-                "
-              />
+            <div className="
+              mt-10 text-center
+            ">
+              <div className="
+                mx-auto mb-5
+                h-px w-14
+                bg-[#C6A57B]
+              " />
 
-              <p
-                className="
-                  font-playfair italic
-                  text-sm leading-relaxed
-                  text-[#F1E6D3]
-                "
-              >
+              <p className="
+                font-playfair italic
+                text-sm leading-relaxed
+                text-[#F1E6D3]
+              ">
                 {CONFIG.fraseFinal}
               </p>
             </div>
+
           </div>
         </div>
       </motion.div>
