@@ -22,21 +22,23 @@ const CONFIG = {
   descripcion:
     "Nos encantará contar con tu presencia en este día tan especial.",
 
-  // FECHA LÍMITE DE CONFIRMACIÓN
   fechaLimite: "30 de enero de 2027",
 
   fraseFinal:
     "¡Gracias por ser parte de nuestra historia!",
 
+  // GOOGLE APPS SCRIPT
+  // No requiere clave ni token de autenticación.
   urlScript:
     "https://script.google.com/macros/s/AKfycbw2S7XaD5xKxmaaGDWMzRTcm2a6C8yv4HLe3NCLrhL51Gr_zy3SXKvZaH8cFH8aJjamSg/exec",
 
-  // Debe coincidir con Generador.jsx
+  // Esta clave es SOLO para descifrar el enlace
+  // personalizado. Debe coincidir con Generador.jsx.
   claveCifrado: "Wedly-Abraham-Janette-10042027-v1",
 };
 
 // ==========================================
-// DESCIFRADO AES-GCM
+// DESCIFRADO DEL ENLACE PERSONALIZADO
 // ==========================================
 
 const obtenerClave = async () => {
@@ -128,11 +130,13 @@ export default function Confirmacion() {
   const [confirmados, setConfirmados] = useState("");
 
   const [mensaje, setMensaje] = useState("");
+
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
 
   const [error, setError] = useState("");
-  const [errorInvitacion, setErrorInvitacion] = useState("");
+  const [errorInvitacion, setErrorInvitacion] =
+    useState("");
 
   // ========================================
   // LEER INVITACIÓN DESDE LA URL
@@ -155,12 +159,15 @@ export default function Confirmacion() {
           return;
         }
 
-        const datos = await descifrarInvitacion(token);
+        const datos = await descifrarInvitacion(
+          token
+        );
 
         setInvitado(datos);
         setConfirmados(String(datos.pases));
 
-        // Recuperar confirmación guardada en este navegador.
+        // Recuperar una confirmación guardada
+        // en este navegador.
 
         try {
           const guardado = localStorage.getItem(
@@ -170,14 +177,23 @@ export default function Confirmacion() {
           if (guardado) {
             const anterior = JSON.parse(guardado);
 
-            setAsistencia(anterior.asistencia);
-            setConfirmados(String(anterior.confirmados));
-            setMensaje(anterior.mensaje || "");
+            setAsistencia(
+              anterior.asistencia || ""
+            );
+
+            setConfirmados(
+              String(anterior.confirmados)
+            );
+
+            setMensaje(
+              anterior.mensaje || ""
+            );
+
             setEnviado(true);
           }
         } catch {
           // Si localStorage no está disponible,
-          // se permite utilizar el formulario.
+          // el formulario sigue funcionando.
         }
       } catch (err) {
         console.error(err);
@@ -200,10 +216,14 @@ export default function Confirmacion() {
   const enviarConfirmacion = async (e) => {
     e.preventDefault();
 
-    if (!invitado || enviando || enviado) return;
+    if (!invitado || enviando || enviado) {
+      return;
+    }
 
     if (!asistencia) {
-      setError("Selecciona si podrás acompañarnos.");
+      setError(
+        "Selecciona si podrás acompañarnos."
+      );
       return;
     }
 
@@ -223,7 +243,6 @@ export default function Confirmacion() {
       setError(
         `Solo tienes ${invitado.pases} pases disponibles.`
       );
-
       return;
     }
 
@@ -234,16 +253,18 @@ export default function Confirmacion() {
       !CONFIG.urlScript.endsWith("/exec")
     ) {
       setError(
-        "La conexión con el registro de asistencia aún no está configurada."
+        "La conexión con Google Sheets no está configurada correctamente."
       );
-
       return;
     }
 
     setEnviando(true);
     setError("");
 
-    // ÚNICAMENTE CUATRO DATOS PARA EL EXCEL
+    // ======================================
+    // SOLO CUATRO DATOS PARA GOOGLE SHEETS
+    // SIN CLAVES NI TOKENS DE AUTENTICACIÓN
+    // ======================================
 
     const datos = {
       nombre: invitado.nombre,
@@ -253,38 +274,47 @@ export default function Confirmacion() {
     };
 
     try {
-      const respuesta = await fetch(CONFIG.urlScript, {
-        method: "POST",
+      const respuesta = await fetch(
+        CONFIG.urlScript,
+        {
+          method: "POST",
 
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8",
-        },
+          headers: {
+            "Content-Type":
+              "text/plain;charset=utf-8",
+          },
 
-        body: JSON.stringify(datos),
-      });
+          body: JSON.stringify(datos),
+        }
+      );
 
       if (!respuesta.ok) {
-        throw new Error("Error de conexión.");
-      }
-
-      const resultado = await respuesta.json();
-
-      if (!resultado.ok) {
         throw new Error(
-          resultado.error ||
-          "No se pudo registrar la confirmación."
+          `Error HTTP ${respuesta.status}`
         );
       }
 
-      setEnviado(true);
+      // El Apps Script debe devolver JSON
+      // con { ok: true } cuando se guarde
+      // correctamente en Google Sheets.
 
-      // Guardado local para conservar la respuesta
-      // al volver a abrir desde el mismo navegador.
+      const resultado = await respuesta.json();
+
+      if (resultado.ok !== true) {
+        throw new Error(
+          resultado.error ||
+          "Google Sheets no confirmó el registro."
+        );
+      }
+
+      // Solo se marca como enviado después
+      // de recibir confirmación del servidor.
+
+      setEnviado(true);
 
       try {
         localStorage.setItem(
           `wedly-confirmacion-${invitado.id}`,
-
           JSON.stringify({
             asistencia,
             confirmados: numeroConfirmados,
@@ -292,13 +322,16 @@ export default function Confirmacion() {
           })
         );
       } catch {
-        // El registro en Sheets ya se completó.
+        // El registro en Sheets ya fue confirmado.
       }
     } catch (err) {
-      console.error(err);
+      console.error(
+        "Error al enviar confirmación:",
+        err
+      );
 
       setError(
-        "No pudimos verificar el registro. Intenta nuevamente en unos momentos."
+        "No pudimos verificar el registro en Google Sheets. Intenta nuevamente en unos momentos."
       );
     } finally {
       setEnviando(false);
@@ -440,7 +473,7 @@ export default function Confirmacion() {
               </p>
 
               {/* ======================================
-                  FECHA LÍMITE DE CONFIRMACIÓN
+                  FECHA LÍMITE
               ====================================== */}
 
               <div
@@ -459,7 +492,8 @@ export default function Confirmacion() {
                     sm:text-base
                   "
                 >
-                  Favor de confirmar tu asistencia antes del
+                  Favor de confirmar tu asistencia
+                  antes del
                 </p>
 
                 <p
@@ -571,7 +605,9 @@ export default function Confirmacion() {
 
                   <p className="mt-4 font-playfair text-3xl">
                     {invitado.pases}{" "}
-                    {invitado.pases === 1 ? "pase" : "pases"}
+                    {invitado.pases === 1
+                      ? "pase"
+                      : "pases"}
                   </p>
 
                   <p
@@ -613,7 +649,9 @@ export default function Confirmacion() {
                           onClick={() => {
                             setAsistencia("si");
 
-                            if (Number(confirmados) < 1) {
+                            if (
+                              Number(confirmados) < 1
+                            ) {
                               setConfirmados(
                                 String(invitado.pases)
                               );
@@ -642,13 +680,19 @@ export default function Confirmacion() {
                       </div>
 
                       {/* ======================================
-                          SELECCIONAR CONFIRMADOS
+                          NÚMERO DE PERSONAS
                       ====================================== */}
 
                       {asistencia === "si" && (
                         <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
+                          initial={{
+                            opacity: 0,
+                            y: 10,
+                          }}
+                          animate={{
+                            opacity: 1,
+                            y: 0,
+                          }}
                           className="mt-7"
                         >
                           <label
@@ -662,12 +706,17 @@ export default function Confirmacion() {
                             id="confirmados"
                             value={confirmados}
                             onChange={(e) =>
-                              setConfirmados(e.target.value)
+                              setConfirmados(
+                                e.target.value
+                              )
                             }
                             className={estiloCampo}
                           >
                             {Array.from(
-                              { length: invitado.pases },
+                              {
+                                length:
+                                  invitado.pases,
+                              },
                               (_, i) => i + 1
                             ).map((numero) => (
                               <option
@@ -685,7 +734,7 @@ export default function Confirmacion() {
                       )}
 
                       {/* ======================================
-                          MENSAJE
+                          MENSAJE OPCIONAL
                       ====================================== */}
 
                       <div className="mt-7">
@@ -693,14 +742,17 @@ export default function Confirmacion() {
                           htmlFor="mensaje"
                           className="mb-3 block text-sm"
                         >
-                          Mensaje para los novios (opcional)
+                          Mensaje para los novios
+                          (opcional)
                         </label>
 
                         <textarea
                           id="mensaje"
                           value={mensaje}
                           onChange={(e) =>
-                            setMensaje(e.target.value)
+                            setMensaje(
+                              e.target.value
+                            )
                           }
                           rows={4}
                           maxLength={1500}
@@ -774,8 +826,14 @@ export default function Confirmacion() {
                   ====================================== */
 
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{
+                      opacity: 0,
+                      scale: 0.96,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      scale: 1,
+                    }}
                     className="
                       mt-8 border border-[#C6A57B]
                       bg-[#F1E6D3]
@@ -799,7 +857,8 @@ export default function Confirmacion() {
 
                     <p
                       className="
-                        mt-4 font-playfair leading-relaxed
+                        mt-4 font-playfair
+                        leading-relaxed
                       "
                     >
                       Tu respuesta ha sido registrada correctamente.
@@ -809,11 +868,14 @@ export default function Confirmacion() {
                       <>
                         <p
                           className="
-                            mt-6 font-playfair text-2xl
+                            mt-6 font-playfair
+                            text-2xl
                           "
                         >
                           {confirmados}{" "}
-                          {Number(confirmados) === 1
+                          {Number(
+                            confirmados
+                          ) === 1
                             ? "persona confirmada"
                             : "personas confirmadas"}
                         </p>
@@ -824,8 +886,10 @@ export default function Confirmacion() {
                       </>
                     ) : (
                       <p className="mt-5 font-playfair italic">
-                        Agradecemos mucho tu respuesta.
-                        Te tendremos presente en nuestro día especial.
+                        Agradecemos mucho tu
+                        respuesta. Te tendremos
+                        presente en nuestro día
+                        especial.
                       </p>
                     )}
 
